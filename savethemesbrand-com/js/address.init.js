@@ -14,7 +14,8 @@ var addressListData = [{
           "name": "Witney Blessington",
           "address": "144 Cavendish Avenue, Indianapolis, IN 46251",
           "phone": "012-345-6789"
-      }, {
+      }, 
+      {
           'id': 2,
           "checked": true,
           "addressType": "Office",
