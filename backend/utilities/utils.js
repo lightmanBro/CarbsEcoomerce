@@ -11,10 +11,6 @@ exports.generateFileName = (mimetype) => {
 
 exports.uploadBucket = (gridbucketName) => {
   // Create a MongoDB connection
-  mongoose.connect(process.env.DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
   const db = mongoose.connection;
 
   // Set up multer for handling file uploads

@@ -28,6 +28,194 @@ const {
 } = require("../routehandler/getpost");
 const { deleteBrand, deleteItem } = require("../routehandler/deletepost");
 
+route.get('/',(req,res)=>{
+  res.render('index')
+})
+route.get('/indexbackend',(req,res)=>{
+  res.render('indexbackend')
+})
+route.get('/login', (req,res)=> {
+  res.render('auth-signin-basic')
+})
+route.get('/signup', (req,res)=> {
+  res.render('auth-signup-basic')
+})
+route.get('/Shopnow', (req,res)=> {
+  res.render('product-grid-sidebar-banner')
+})
+route.get('/contact', (req,res)=> {
+  res.render('contact-us')
+})
+route.get('/about', (req,res)=> {
+  res.render('about-us')
+})
+route.get('/purchase', (req,res)=> {
+  res.render('purchase-guide')
+})
+route.get('/ecommerce', (req,res)=> {
+  res.render('ecommerce-faq')
+})
+route.get('/terms', (req,res)=> {
+  res.render('terms-conditions')
+})
+route.get('/watch', (req,res)=> {
+  res.render('watch-main-layout')
+})
+route.get('/trend', (req,res)=> {
+  res.render('trend-fashion')
+})
+route.get('/cart', (req,res)=> {
+  res.render('shop-cart')
+})
+route.get('/wishlist', (req,res)=> {
+  res.render('wishlist')
+})
+route.get('/track', (req,res)=> {
+  res.render('track-order')
+})
+route.get('/privacy', (req,res)=> {
+  res.render('privacy-policy')
+})
+route.get('/account', (req,res)=> {
+  res.render('account')
+})
+route.get('/address', (req,res)=> {
+  res.render('address')
+})
+route.get('/shop-cart', (req,res)=> {
+  res.render('shop-cart')
+})
+route.get('/checkout', (req,res)=> {
+  res.render('checkout')
+})
+route.get('/component', (req,res)=> {
+  res.render('component')
+})
+route.get('/confirmation', (req,res)=> {
+  res.render('confirmation')
+})
+route.get('/email-black', (req,res)=> {
+  res.render('email-black')
+})
+route.get('/email-flash', (req,res)=> {
+  res.render('email-flash')
+})
+route.get('/email-order', (req,res)=> {
+  res.render('email-order')
+})
+route.get('/order-history', (req,res)=> {
+  res.render('order-history')
+})
+route.get('/invoice', (req,res)=> {
+  res.render('invoice')
+})
+route.get('/modern', (req,res)=> {
+  res.render('modern')
+})
+route.get('/payment', (req,res)=> {
+  res.render('payment')
+})
+route.get('/product-details', (req,res)=> {
+  res.render('product-details')
+})
+route.get('/product-list-f', (req,res)=> {
+  res.render('product-list-f')
+})
+route.get('/product-category', (req,res)=> {
+  res.render('product-category')
+})
+route.get('/review', (req,res)=> {
+  res.render('review')
+})
+
+
+
+
+
+route.get('/backends', (req,res)=> {
+  res.render('accountb')
+})
+route.get('/account-settings', (req,res)=> {
+  res.render('account-settings')
+})
+route.get('/brands', (req,res)=> {
+  res.render('brands')
+})
+route.get('/categories', (req,res)=> {
+  res.render('categories')
+})
+route.get('/calendar', (req,res)=> {
+  res.render('calendar')
+})
+route.get('/coming-soon', (req,res)=> {
+  res.render('coming-soon')
+})
+route.get('/coupons', (req,res)=> {
+  res.render('coupons')
+})
+route.get('/currency', (req,res)=> {
+  res.render('currency-rates')
+})
+route.get('/invoices-create', (req,res)=> {
+  res.render('invoices-create')
+})
+route.get('/invoices-details', (req,res)=> {
+  res.render('invoices-details')
+})
+route.get('/invoices-list', (req,res)=> {
+  res.render('invoices-list')
+})
+route.get('/order-list', (req,res)=> {
+  res.render('order-list')
+})
+route.get('/order-overview', (req,res)=> {
+  res.render('order-overview')
+})
+route.get('/product-create', (req,res)=> {
+  res.render('product-create')
+})
+route.get('/product-grid', (req,res)=> {
+  res.render('product-grid')
+})
+route.get('/product-list', (req,res)=> {
+  res.render('product-list')
+})
+route.get('/product-overview', (req,res)=> {
+  res.render('product-overview')
+})
+route.get('/reviews-ratings', (req,res)=> {
+  res.render('reviews-ratings')
+})
+route.get('/seller-overview', (req,res)=> {
+  res.render('seller-overview')
+})
+route.get('/seller-grid-view', (req,res)=> {
+  res.render('seller-grid-view')
+})
+route.get('/seller-list-view', (req,res)=> {
+  res.render('seller-list-view')
+})
+route.get('/seller-list-view', (req,res)=> {
+  res.render('seller-list-view')
+})
+route.get('/shipping-list', (req,res)=> {
+  res.render('shipping-list')
+})
+route.get('/shipments', (req,res)=> {
+  res.render('shipments')
+})
+route.get('/statistics', (req,res)=> {
+  res.render('statistics')
+})
+route.get('/sub-categories', (req,res)=> {
+  res.render('sub-categories')
+})
+route.get('/transactions', (req,res)=> {
+  res.render('transactions')
+})
+route.get('/users-list', (req,res)=> {
+  res.render('users-list')
+})
 
 //Create a new post
 route.get("/items", getAllProducts);

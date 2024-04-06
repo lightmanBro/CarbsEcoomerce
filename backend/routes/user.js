@@ -20,9 +20,9 @@ route.post("/user/new", async (req, res) => {
   const { email, password } = req.body;
   const user = await new User({ email, password });
   const token = await user.generateAuthToken();
-  if(user){
-    return res.status(300).json({status:"Failed",message:"Email already exists"})
-  }
+  // if(user){
+  //   return res.status(300).json({status:"Failed",message:"Email already exists"})
+  // }
   //mailer function needs to be called here
   try {
     user.availabilityStatus = "online";

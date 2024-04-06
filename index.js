@@ -1,28 +1,30 @@
-require("./backend/database/mongodb");
-require("dotenv").config();
-// const bodyParser = require('express').bodyParser()
-const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
+require('./backend/database/mongodb')
 const express = require("express");
 const multer = require("multer");
 const path = require('path');
 const hbs = require('hbs');
-const fileUpload = require("express-fileupload");
-const app = express();
+const helmet = require("helmet");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const app = express();
+
 app.use(express.json());
 
-//Define the config file for express.
+// Define the config file for express.
 const publicDirectory = path.join(__dirname, './public');
-const viewPath = path.join(__dirname, './template/views')
-const partialsPath = path.join(__dirname, './template/partials')
-//Setup handlebar's engine and views locator
-app.set('view engine', 'hbs');
-app.set('views',viewPath);
-hbs.registerPartials(partialsPath)
-//Setup static directory to serve.
-app.use(express.static(publicDirectory))
+const viewPath = path.join(__dirname, './template/views');
+const partialsPath = path.join(__dirname, './template/views/partials');
 
+// Setup handlebar's engine and views locator
+app.set('view engine', 'hbs');
+app.set('views', viewPath);
+hbs.registerPartials(partialsPath);
+
+// Setup static directory to serve.
+app.use(express.static(publicDirectory));
 
 // CORS
 const corsOptions = {
@@ -33,15 +35,15 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-//Because of the multer upload middleware
+// Because of the multer upload middleware
 const postRoute = require("./backend/routes/post");
 app.use(postRoute);
-app.use(fileUpload());
+
 app.use(multer().array("files")); // Multer middleware
 
 const userRoute = require("./backend/routes/user");
 const adminRoute = require("./backend/routes/admin");
-const orderRoute = require("./backend/routehandler/order")
+const orderRoute = require("./backend/routehandler/order");
 app.use(adminRoute);
 app.use(userRoute);
 app.use(orderRoute);
@@ -55,8 +57,6 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again in an hour!",
 });
 
-
-
 // Apply rate limiter to specific routes
 const rateLimitedRoutes = ["/user", "/post"]; // Add other rate-limited routes as needed
 app.use(rateLimitedRoutes, limiter);
@@ -65,11 +65,8 @@ app.use(rateLimitedRoutes, limiter);
 const filterRoute = require("./backend/utilities/filter");
 app.use(filterRoute);
 
-
 const PORT = process.env.PORT || 2500;
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
-
-// console.log(process.env.DATABASE_URL)

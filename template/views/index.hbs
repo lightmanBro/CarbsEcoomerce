@@ -1,0 +1,373 @@
+<!DOCTYPE html><html lang="en" data-bs-theme="light" data-footer="dark"><head>
+
+        <meta charset="utf-8">
+        <title>Carbs HomePage</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="Toner - eCommerce + Admin HTML Template Build with HTML, React, Laravel, Nodejs" name="description">
+        <meta content="Themesbrand" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!--Swiper slider css-->
+        <link href="css/swiper-bundle.min.css" rel="stylesheet" type="text/css">
+
+        <!-- Bootstrap Css -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <!-- Icons Css -->
+        <link href="css/icons.min.css" rel="stylesheet" type="text/css">
+        <!-- App Css-->
+        <link href="css/app.min.css" rel="stylesheet" type="text/css">
+        <!-- custom Css-->
+        <link href="css/custom.min.css" rel="stylesheet" type="text/css">
+
+    </head>
+
+    <body>
+
+
+{{> header}}
+
+
+
+        <!--cart -->
+        <div class="offcanvas offcanvas-end product-list" tabindex="-1" id="ecommerceCart" aria-labelledby="ecommerceCartLabel">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title" id="ecommerceCartLabel">My Cart <span class="badge bg-danger align-middle ms-1 cartitem-badge"> </span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body px-0">
+                <div data-simplebar="" class="h-100">
+                    <ul class="list-group list-group-flush cartlist" id="cartItemLists">
+                        <!-- This is where the goods from the database will be displayed -->
+                        
+                        
+                    </ul>
+
+                    <div class="table-responsive mx-2 border-top border-top-dashed">
+                        <table class="table table-borderless mb-0 fs-14 fw-semibold">
+                            <tbody>
+                                <tr>
+                                    <td>Sub Total :</td>
+                                    <td class="text-end cart-subtotal"></td>
+                                </tr>
+                                <tr>
+                                    <td>Discount <span class="text-muted"></span>:</td>
+                                    <td class="text-end cart-discount"></td>
+                                </tr>
+                                <tr>
+                                    <td>Shipping Charge :</td>
+                                    <td class="text-end cart-shipping"></td>
+                                </tr>
+                                <tr>
+                                    <td>Estimated Tax (12.5%) : </td>
+                                    <td class="text-end cart-tax"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="offcanvas-footer border-top p-3 text-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="m-0 fs-16 text-muted">Total:</h6>
+                    <div class="px-2">
+                        <h6 class="m-0 fs-16 cart-total"></h6>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="shop-cart.html" type="button" class="btn btn-light w-100" id="reset-layout">View Cart</a >
+                    </div>
+                    <div class="col-6">
+                        <a href="address.html" target="_blank" class="btn btn-info w-100">Continue to Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content rounded">
+                    <div class="modal-header p-3">
+                        <div class="position-relative w-100">
+                            <input type="text" class="form-control form-control-lg border-2" placeholder="Search for Toner..." autocomplete="off" id="search-options" value="">
+                            <span class="bi bi-search search-widget-icon fs-17"></span>
+                            <a href="javascript:void(0);" class="search-widget-icon fs-14 link-secondary text-decoration-underline search-widget-icon-close d-none" id="search-close-options">Clear</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0 overflow-hidden" id="search-dropdown">
+
+                        <div class="dropdown-head rounded-top">
+                            <div class="p-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="m-0 fs-14 text-muted fw-semibold"> RECENT SEARCHES </h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-item bg-transparent text-wrap">
+                                <a href="index.html" class="btn btn-soft-secondary btn-sm btn-rounded">how to setup <i class="mdi mdi-magnify ms-1 align-middle"></i></a>
+                                <a href="index.html" class="btn btn-soft-secondary btn-sm btn-rounded">buttons <i class="mdi mdi-magnify ms-1 align-middle"></i></a>
+                            </div>
+                        </div>
+
+                        <div data-simplebar="" style="max-height: 300px;" class="pe-2 ps-3 my-3">
+                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- removeItemModal -->
+        <div id="removeItemModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mt-2 text-center">
+                            <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                            <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                <h4>Are you sure ?</h4>
+                                <p class="text-muted mx-4 mb-0">Are you sure you want to remove this product ?</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                            <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn w-sm btn-danger" id="remove-product">Yes, Delete It!</button>
+                        </div>
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="subscribeModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0">
+                    <div class="modal-body p-0 bg-info-subtle rounded">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-lg-6">
+                                <div class="p-4 h-100">
+                                    <span class="badge bg-info-subtle text-info  fs-13">GET 10% SALE OFF</span>
+                                    <h2 class="display-6 mt-2 mb-3">Subscribe &amp; Get <b>50% Special</b> Discount On Email</h2>
+                                    <p class="mb-4 pb-lg-2 fs-16">Join our newsletter to receive the latest updates and promotion</p>
+                                    <form action="#!">
+                                        <div class="position-relative ecommerce-subscript">
+                                            <input type="email" class="form-control rounded-pill border-0" placeholder="Enter your email">
+                                            <button type="submit" class="btn btn-info btn-hover rounded-pill">Subscript</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="p-4 pb-0">
+                                    <img src="images/subscribe.png" alt="" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end modal -->
+
+        <!-- <a href="../backend/index.html" class="btn btn-warning position-fixed bottom-0 start-0 m-5 z-3 btn-hover d-none d-lg-block"><i class="bi bi-database align-middle me-1"></i> Backend</a> -->
+
+        <!--start back-to-top-->
+        <button onclick="topFunction()" class="btn btn-info btn-icon" style="bottom: 50px;" id="back-to-top">
+            <i class="ri-arrow-up-line"></i>
+        </button>
+        <!--end back-to-top-->
+
+        <section class="position-relative">
+            <div id="ecommerceHero" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="ecommerce-home bg-danger-subtle" style="background-image: url('images/img-1-0-1.png');">
+                            <div class="container">
+                                <div class="row justify-content-end">
+                                    <div class="col-lg-7">
+                                        <div class="text-sm-end">
+                                            <p class="fs-15 fw-semibold text-uppercase"><i class="ri-flashlight-fill text-primary align-bottom me-1"></i> In this season, find the best</p>
+                                            <h1 class="display-4 fw-bold lh-base text-capitalize mb-3">Exclusive collection for everyone</h1>
+                                            <p class="fs-20 mb-4">Biggest offers on this season</p>
+                                            <button class="btn btn-danger btn-hover"><i class="ph-shopping-cart align-middle me-1"></i> Shop Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="ecommerce-home bg-primary-subtle" style="background-image: url('images/img-2-0-1.png');">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div>
+                                            <p class="fs-15 fw-semibold text-uppercase"><i class="ri-flashlight-fill text-info align-bottom me-1"></i> Save up to <span class="text-danger">50%</span> off</p>
+                                            <h1 class="display-4 fw-semibold text-capitalize lh-base">Pro Smart watches for smart People</h1>
+                                            <p class="fs-18 mb-4"><b>40% off</b> up to on all selected products</p>
+                                            <button class="btn btn-primary btn-hover"><i class="ph-shopping-cart align-middle me-1"></i> Shop Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="ecommerce-home" style="background-image: url('images/img-6.jpg');background-size: cover;">
+                            <div class="container">
+                                <div class="row justify-content-end">
+                                    <div class="col-lg-6">
+                                        <div class="text-end">
+                                            <p class="fs-15 fw-semibold text-uppercase text-dark">Jewelry Design with Love</p>
+                                            <h1 class="display-4 fw-semibold text-capitalize lh-base text-dark">Discover world best Jewelry</h1>
+                                            <p class="text-dark lead fs-19 mb-4">Jewelry are like a tribute to being a woman</p>
+                                            <div class="hstack gap-2 justify-content-end">
+                                                <button class="btn btn-success btn-hover">Shop Now <i class="ph-arrow-up-right align-middle ms-1"></i></button>
+                                                <button class="btn btn-ghost-secondary btn-hover">Watch Now <i class="ph-play-circle align-middle ms-1 fs-16"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#ecommerceHero" data-bs-slide="prev">
+                    <i class="ph-caret-left"></i>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#ecommerceHero" data-bs-slide="next">
+                    <i class="ph-caret-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="row gy-4 gy-lg-0">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0">
+                                <img src="images/fast-delivery.png" alt="" class="avatar-sm">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fs-15">Fast &amp; Secure Delivery</h5>
+                                <p class="text-muted mb-0">Tell about your service.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0">
+                                <img src="images/returns.png" alt="" class="avatar-sm">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fs-15">2 Days Return Policy</h5>
+                                <p class="text-muted mb-0">No question ask.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0">
+                                <img src="images/guarantee-certificate.png" alt="" class="avatar-sm">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fs-15">Money Back Guarantee</h5>
+                                <p class="text-muted mb-0">Within 5 business days</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0">
+                                <img src="images/24-hours-support.png" alt="" class="avatar-sm">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fs-15">24 X 7 Service</h5>
+                                <p class="text-muted mb-0">Online service for customer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section pt-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <a href="#!" class="product-banner-1 mt-4 mt-lg-0 rounded overflow-hidden position-relative d-block">
+                            <img src="images/img-3-1-1.jpg" class="img-fluid rounded" alt="">
+                            <div class="bg-overlay blue"></div>
+                            <div class="product-content p-4">
+                                <p class="text-uppercase text-white mb-2">Up to 50-70%</p>
+                                <h1 class="text-white lh-base fw-medium ff-secondary"> Women's Sportwere Sales</h1>
+                                <div class="product-btn mt-4 text-white">
+                                    Shop Now <i class="bi bi-arrow-right ms-2"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <a href="#!" class="product-banner-1 mt-4 mt-lg-0 rounded overflow-hidden position-relative d-block">
+                            <img src="images/img-1_1-1.jpg" class="img-fluid rounded" alt="">
+                            <div class="product-content p-4">
+                                <p class="text-uppercase fw-medium text-secondary mb-2">Summer Sales</p>
+                                <h1 class="lh-base ff-secondary text-dark">Trendy Fashion Clothes</h1>
+                                <div class="product-btn mt-4">
+                                    Shop Now <i class="bi bi-arrow-right ms-2"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- START PRODUCT -->
+        <section class="section ">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12" id="goodsParent">
+                        <div class="row gallery-wrapper" id="goods">
+
+                            <!-- The goods from the database will be listed here -->
+                        </div>
+                        <div class="mt-0 text-center">
+                            <a href="/Shopnow" class="btn btn-soft-primary btn-hover">View All Products <i class="mdi mdi-arrow-right align-middle ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+      {{> footer}}
+
+        <!-- JAVASCRIPT -->
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script src="js/simplebar.min.js"></script>
+        <script src="js/plugins.js"></script>
+
+        <!-- isotope-layout -->
+        <script src="js/isotope.pkgd.min.js"></script>
+
+        <!--Swiper slider js-->
+        <script src="js/swiper-bundle.min.js"></script>
+        
+        <!-- Countdown js -->
+        <script src="js/coming-soon.init.js"></script>
+        
+        <script src="js/landing-index.init.js"></script>
+
+        <script src="js/menu.init.js"></script>
+
+    
+
+</body></html>
