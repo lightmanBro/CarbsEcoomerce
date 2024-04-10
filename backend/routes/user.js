@@ -14,32 +14,40 @@ const { auth } = require("../middleware/auth");
 //Forgot Password DONE
 //Reset Password DONE
 //Change Password DONE
-
-//Sign up a new user
 route.post("/user/new", async (req, res) => {
   const { email, password } = req.body;
-  const user = await new User({ email, password });
-  const token = await user.generateAuthToken();
-  // if(user){
-  //   return res.status(300).json({status:"Failed",message:"Email already exists"})
-  // }
-  //mailer function needs to be called here
+  
   try {
+    // Check if the user with the provided email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ status: "Failed", message: "Email already exists" });
+    }
+
+    // Create a new user
+    const user = new User({ email, password });
+    const token = await user.generateAuthToken();
+    //Set cookie and send response
+    res.cookie('jwt', token, {
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000), // Expires in 7 days
+      secure: true, // Cookie can only be sent over HTTPS
+      httpOnly: true, // Cookie cannot be accessed by client-side JavaScript
+      sameSite: 'strict' // Cookie is only sent in same-site requests
+    });
+    
+    
+    // Save the new user to the database
     user.availabilityStatus = "online";
     user.role = "customer";
     await user.save();
-    res.cookie("jwt", token, {
-      expires: new Date(
-        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-      ),
-      secure: true,
-      httpOnly: true,
-    });
 
+    
     res.send({ user, token });
-    //Send a welcome message to the user via email,
+    
+    // Send a welcome message to the user via email
     // sendEmail(user.email, subject, text, html)
   } catch (error) {
+    // Handle other errors
     res.status(400).send(error.message);
   }
 });
@@ -64,7 +72,13 @@ route.post("/user/login", async (req, res) => {
 
       // Generate authentication token
       const token = await user.generateAuthToken();
-
+      //Set cookie and send response
+      res.cookie('jwt', token, {
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000), // Expires in 7 days
+      secure: true, // Cookie can only be sent over HTTPS
+      httpOnly: true, // Cookie cannot be accessed by client-side JavaScript
+      sameSite: 'strict' // Cookie is only sent in same-site requests
+      });
       // Send the user and token in the response
       res.status(200).send({ status: "success", email: user.email, token });
   } catch (error) {
@@ -100,7 +114,7 @@ route.get("/user/me", auth, async (req, res) => {
 
 route.patch("/user/update", auth, async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ["name", "email", "password"];
+  const allowedUpdates = ["firstName","lastName","phoneNumber","city","zipCode","country", "email", "password"];
   const isValidUpdates = updates.every((update) => {
     allowedUpdates.includes(update);
   });
@@ -277,6 +291,37 @@ route.patch("/user/password/reset", auth, async (req, res) => {
   });
   res.status(200).send({ user, token });
 });
+
+// Route to handle password change request in the app
+route.patch('/user/password/reset/inapp', async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  
+  try {
+    // Find user by ID or any other unique identifier
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    
+    // Verify old password
+    const isMatch = await user.correctPassword(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Old password is incorrect.' });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    user.passwordChangedAt = Date.now();
+    await user.save();
+    
+    res.status(200).json({ message: 'Password changed successfully.' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+
 
 // Logout route
 route.post("/user/logout", auth, async (req, res) => {

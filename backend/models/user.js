@@ -150,6 +150,19 @@ userSchema.methods.setAddress = async function (type, details) {
   }
 };
 
+userSchema.methods.toJSON = function() {
+  const user = this;
+  const userObject = user.toObject();
+
+  // Remove sensitive fields
+  delete userObject.password;
+  delete userObject.tokens;
+  delete userObject.__v;
+  delete userObject._id;
+  delete userObject.passwordChangedAt;
+  delete userObject.role;
+  return userObject;
+};
 
 
 userSchema.methods.updateAdrress = async function(type, details){

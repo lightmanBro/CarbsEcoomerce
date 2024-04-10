@@ -2,13 +2,13 @@ const { Product, Brand,Category, Subcategory } = require("../models/item");
 
 exports.getItem = async (req, res) => {
   try {
-    const propertyType = req.params.propertyType;
+    const type = req.params.type;
     const _id = req.params.id;
 
     // Assuming you have separate models for different property types (e.g., Product, Brand)
     let postModel;
 
-    switch (propertyType) {
+    switch (type) {
       case "product":
         postModel = Product;
         break;
@@ -34,6 +34,40 @@ exports.getItem = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: "Failed", message: error.message });
+  }
+};
+
+
+exports.filterProducts = async (req, res) => {
+  try {
+    let filters = {};
+
+    // Extract filter parameters from query string
+    const { color, brand, minPrice, maxPrice, size, minRating, maxRating, name } = req.query;
+
+    // Build the filter object based on provided parameters
+    if (color) filters.color = color;
+    if (brand) filters.brand = brand;
+    if (minPrice || maxPrice) {
+      filters.price = {};
+      if (minPrice) filters.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filters.price.$lte = parseFloat(maxPrice);
+    }
+    if (size) filters.size = size;
+    if (minRating || maxRating) {
+      filters.rating = {};
+      if (minRating) filters.rating.$gte = parseFloat(minRating);
+      if (maxRating) filters.rating.$lte = parseFloat(maxRating);
+    }
+    if (name) filters.name = { $regex: new RegExp(name, 'i') };
+
+    // Find products matching the filters
+    const products = await Product.find(filters);
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error filtering products:', error);
+    res.status(500).json({ status: 'Failed', message: 'Internal server error.' });
   }
 };
 
@@ -98,13 +132,12 @@ exports.getSubCategoryProducts = async (req,res)=>{
 }
 
 exports.getAllProducts = async (req,res)=>{
-  res.render('index');
-  // try {
-  //   const products = await Product.find({status:{$in:["draft"]}},'color discount price productTitle mediaFilesPicture');
-  //   res.status(200).json(products);
-  // } catch (error) {
-  //   res.status(500).json(error.message)
-  // }
+  try {
+    const products = await Product.find({status:{$in:["draft"]}},'color discount price productTitle mediaFilesPicture');
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error.message)
+  }
 }
 
 exports.getAllProductsBackend = async (req,res)=>{

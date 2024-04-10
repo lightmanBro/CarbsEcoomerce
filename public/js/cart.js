@@ -7,7 +7,7 @@ if (token && username) {
 }
 
 //Also download the item picture too in the getCartItem function;
-async function getCartItems() {
+async function getCartItem() {
   console.log(token);
   //Get cart items
   try {
@@ -18,7 +18,7 @@ async function getCartItems() {
         "Content-Type": "application/json",
       },
     };
-    const response = await fetch("http://127.0.0.1:2500/cart", data);
+    const response = await fetch("http://127.0.0.1:2500/carts", data);
     if (response.ok) {
       const items = await response.json();
       console.log(items);
@@ -311,10 +311,10 @@ async function removeFromCart(itemId) {
   };
   const itemToCart = await fetch(`http://127.0.0.1:2500/cart/${itemId}`, data);
   if (itemToCart.ok) {
-    getCartItems();
+    getCartItem();
   }
 }
-getCartItems();
+getCartItem();
 
 
 //Get the item image from the database and set it as the cary item image;

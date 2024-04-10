@@ -11,16 +11,41 @@ document.addEventListener('DOMContentLoaded', function () {
   
   const signUpform = document.getElementById('signUp');
   signUpform.addEventListener('submit', function (e) {
+
       e.preventDefault();
-      entryForm('new')
+      
+      validateInput()
+        
+    
+     
   });
 
 });
+function validateInput() {
+    const email = document.getElementById('sign-in-useremail').value.trim();
+  const password = document.getElementById('sign-in-password-input').value.trim();
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-async function entryForm(type) {
-  const email = document.getElementById('sign-in-useremail').value;
-  const password = document.getElementById('sign-in-password-input').value;
+    // Check if email is empty or doesn't match the regex
+    if (!email || !emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return false;
+    }
 
+    // Check if password is empty or too short
+    if (!password || password.length < 6) {
+        alert('Password must be at least 6 characters long.');
+        return false;
+    }
+
+    // All validations passed
+    entryForm('new',email, password)
+    // return true;
+}
+
+async function entryForm(type,email, password) {
+    
   try {
       const header = {
           method: 'POST',
@@ -44,7 +69,8 @@ async function entryForm(type) {
           window.location.href = '/'; // Replace './index.html' with the desired path
       } else {
           // Handle non-successful response
-          const errorData = await response.text();
+          const errorData = await response.json();
+          alert(`${errorData.message}`);
           console.log(errorData);
           return errorData.message
       }
@@ -53,4 +79,19 @@ async function entryForm(type) {
       // Handle errors
       console.error('Error during authentication:', error.message);
   }
-}
+};
+
+
+// Function to set a cookie
+// function setCookie(name, value, days) {
+//     var expires = "";
+//     if (days) {
+//         var date = new Date();
+//         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+//         expires = "; expires=" + date.toUTCString();
+//     }
+//     document.cookie = name + "=" + (value || "") + expires + "; path=/";
+// }
+
+// // Usage example
+// setCookie('jwt', token, 7); // Sets a cookie named 'jwt' with the token value that expires in 7 days

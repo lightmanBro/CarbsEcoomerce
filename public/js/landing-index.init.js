@@ -111,3 +111,4 @@ var swiper = new Swiper(".latest-slider", {
         },
     },
 });
+

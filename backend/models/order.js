@@ -45,7 +45,9 @@ const orderSchema = new mongoose.Schema({
 
 
 //List new orders
+orderSchema.methods.ListNewOrders = async function(){
 
+}
 //List pending orders
 
 //List Deliverd orders

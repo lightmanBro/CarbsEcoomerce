@@ -43,11 +43,12 @@ app.use(multer().array("files")); // Multer middleware
 
 const userRoute = require("./backend/routes/user");
 const adminRoute = require("./backend/routes/admin");
-const orderRoute = require("./backend/routehandler/order");
+const orderRoute = require("./backend/routes/order");
+const cartRoute = require("./backend/routes/cart");
 app.use(adminRoute);
 app.use(userRoute);
 app.use(orderRoute);
-
+app.use(cartRoute);
 app.use(helmet()); // Set http security header
 
 // Rate Limiter to prevent brute force attack and denial of server
@@ -58,7 +59,7 @@ const limiter = rateLimit({
 });
 
 // Apply rate limiter to specific routes
-const rateLimitedRoutes = ["/user", "/post"]; // Add other rate-limited routes as needed
+const rateLimitedRoutes = ["/user", "/post", "/order"]; // Add other rate-limited routes as needed
 app.use(rateLimitedRoutes, limiter);
 
 // Include your routes

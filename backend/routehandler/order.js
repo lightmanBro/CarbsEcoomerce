@@ -1,6 +1,3 @@
-const express = require("express");
-const router = express.Router();
-const { auth, salesAuth } = require("../middleware/auth");
 const { Product } = require("../models/item");
 const Order = require("../models/order");
 
@@ -8,7 +5,7 @@ const Order = require("../models/order");
 //When an order is placed then it should reflect in the notification and send an email to the sales department.
 // Route to place an order
 // When an order is placed then it should reflect in the notification and send an email to the sales department.
-router.post("/order", auth, async (req, res) => {
+exports.createOrder = async (req, res) => {
   try {
     const user = req.user;
     const { items, address } = req.body;
@@ -18,7 +15,7 @@ router.post("/order", auth, async (req, res) => {
         const product = await Product.findById(item.productId);
         if (!product) {
           return res
-            .status(403)
+            .status(404)
             .json({ status: "Failed", message: "Product not found" });
         }
         return {
@@ -35,7 +32,7 @@ router.post("/order", auth, async (req, res) => {
       const product = await Product.findById(orderItem.product);
       if (!product) {
         return res
-          .status(403)
+          .status(404)
           .json({
             status: "Failed",
             message: `Product with ID ${orderItem.product} not found.`,
@@ -44,7 +41,7 @@ router.post("/order", auth, async (req, res) => {
 
       if (orderItem.quantity > product.available) {
         return res
-          .status(300)
+          .status(400)
           .json({
             status: "Failed",
             message: `Not enough stock available for product ${product.productTitle}.`,
@@ -64,7 +61,7 @@ router.post("/order", auth, async (req, res) => {
 
     const order = new Order({
       customer: user._id,
-      salesRep: user.salesRep, // Assuming you have a salesRep field in the User model
+      salesRep: user.salesRep || "customer", // Assuming you have a salesRep field in the User model
       items: orderItems,
       deliveryAddress,
       totalAmount: totalAmount,
@@ -75,15 +72,49 @@ router.post("/order", auth, async (req, res) => {
     res.status(201).json({
       status: "Success",
       message: "Order placed successfully",
+      orderId: order._id, // Include the ID of the created order in the response
       totalAmount: totalAmount,
     });
   } catch (error) {
     res.status(400).json({ status: "Failed", message: error.message });
   }
-});
+};
+/*
+async function createOrder(items=[], address) {
+  const token = sessionStorage.getItem('token'); // Assuming you're storing the token in sessionStorage
+  
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  };
+  
+  const body = JSON.stringify({ items, address });
+  
+  try {
+    const response = await fetch('/user/orders', {
+      method: 'POST',
+      headers,
+      body
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Order created successfully:', data);
+      return data; // Return the order details if needed
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+  } catch (error) {
+    console.error('Error creating order:', error.message);
+    throw error; // Rethrow the error to handle it at the caller's level
+  }
+}
+
+*/
 
 // Get all the orders
-router.get("/order", auth, async (req, res) => {
+exports.getOrder = async (req, res) => {
   try {
     const user = req.user;
     const orders = await Order.find({ customer: user._id });
@@ -91,14 +122,10 @@ router.get("/order", auth, async (req, res) => {
   } catch (error) {
     res.status(500).json({ status: "Failed", message: error.message });
   }
-});
-
-
-
-
+};
 
 // Route to start processing the customer order by the sales rep
-router.patch("/order/process/:orderId", auth, salesAuth, async (req, res) => {
+exports.updateOrder= async (req, res) => {
   const { status, deliveryTime, deliveryType } = req.body; // Add deliveryTime and deliveryType to your request body
 
   try {
@@ -151,72 +178,11 @@ router.patch("/order/process/:orderId", auth, salesAuth, async (req, res) => {
   } catch (error) {
     res.status(500).json({ status: "Failed", message: error.message });
   }
-});
+};
 
-// Route to save an item for later
-router.post("/cart/:productId", auth, async (req, res) => {
-  try {
-    const user = req.user;
-    const productId = req.params.productId;
-
-    // Find the product in the shopping cart
-    const cartItem = user.shoppingCart.find((item) => item.equals(productId));
-
-    if (cartItem) {
-      return res.status(404).json({
-        status: "Failed",
-        message: "Product found in the shopping cart",
-      });
-    }
-    // Add the product to the saved items
-    await user.addToShoppingCart(productId);
-
-    res.status(200).json({
-      status: "Success",
-      message: "Item saved for later",
-    });
-  } catch (error) {
-    res.status(400).json({ status: "Failed", message: error.message });
-  }
-});
-
-// Route to get all the shopping cart items
-router.get("/cart", auth, async (req, res) => {
-  try {
-    const user = req.user;
-    const cartItems = user.shoppingCart;
-    //Find the product from the product document.
-    const allItems = await Product.find(
-      { _id: cartItems },
-      "productTitle price available color"
-    );
-    res.status(200).json({
-      status: "Success",
-      allItems,
-    });
-  } catch (error) {
-    res.status(400).json({ status: "Failed", message: error.message });
-  }
-});
-
-// Route to remove an item from the shopping cart
-router.delete("/cart/:productId", auth, async (req, res) => {
-  try {
-    const user = req.user;
-    const productId = req.params.productId;
-
-    await user.removeFromShoppingCart(productId);
-
-    res.status(200).json({
-      status: "Success",
-      message: "Item removed from the shopping cart",
-    });
-  } catch (error) {
-    res.status(400).json({ status: "Failed", message: error.message });
-  }
-});
 
 // Search for orders by Customer or OrderId
+//Either this is done on the front-End or by querying the backend;
 exports.searchOrders = async (req, res) => {
   try {
     const { query } = req.params;
@@ -294,4 +260,4 @@ exports.cancelOrder = async (req, res) => {
     res.status(400).json({ status: "Failed", message: error.message });
   }
 };
-module.exports = router;
+
